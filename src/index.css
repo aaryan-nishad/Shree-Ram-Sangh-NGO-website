@@ -3,6 +3,7 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-hindi: "Noto Sans Devanagari", "Nirmala UI", "Mangal", sans-serif;
 
   --color-primary: #d9773d;
   --color-primary-hover: #bf6930;
@@ -52,7 +53,8 @@
   }
 
   img,
-  svg {
+  svg,
+  video {
     display: block;
     max-width: 100%;
   }

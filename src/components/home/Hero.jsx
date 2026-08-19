@@ -1,160 +1,175 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowRight, Pause, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import heroSlides from '../../data/heroSlides.js';
+import heroVideos from '../../data/heroSlides.js';
 import Button from '../ui/Button';
-import Container from '../ui/Container';
-
-const AUTOPLAY_DELAY = 5000;
 
 function Hero() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef(null);
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [isReducedMotion, setIsReducedMotion] = useState(() =>
+        typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    );
+    const [isMobile, setIsMobile] = useState(() =>
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+    );
+    const activeVideo = heroVideos[0];
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    if (prefersReducedMotion) {
-      setIsPaused(true);
-      return undefined;
-    }
+        const handleMotionChange = (event) => {
+            setIsReducedMotion(event.matches);
+        };
 
-    if (isPaused) {
-      return undefined;
-    }
+        mediaQuery.addEventListener('change', handleMotionChange);
 
-    intervalRef.current = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % heroSlides.length);
-    }, AUTOPLAY_DELAY);
+        return () => mediaQuery.removeEventListener('change', handleMotionChange);
+    }, []);
 
-    return () => window.clearInterval(intervalRef.current);
-  }, [isPaused]);
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 767px)');
+        const handleViewportChange = (event) => setIsMobile(event.matches);
 
-  useEffect(() => {
-    return () => window.clearInterval(intervalRef.current);
-  }, []);
+        mediaQuery.addEventListener('change', handleViewportChange);
 
-  const goToSlide = (index) => {
-    setActiveIndex(index);
+        return () => mediaQuery.removeEventListener('change', handleViewportChange);
+    }, []);
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setIsPaused(true);
-      return;
-    }
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) {
+            return undefined;
+        }
 
-    setIsPaused(true);
-    window.clearTimeout(intervalRef.current);
-    intervalRef.current = window.setTimeout(() => setIsPaused(false), 7000);
-  };
+        if (isReducedMotion) {
+            video.pause();
+            return undefined;
+        }
 
-  const goToPrevious = () => {
-    goToSlide((activeIndex - 1 + heroSlides.length) % heroSlides.length);
-  };
+        video.play().catch(() => undefined);
 
-  const goToNext = () => {
-    goToSlide((activeIndex + 1) % heroSlides.length);
-  };
+        return () => {
+            video.pause();
+        };
+    }, [isReducedMotion]);
 
-  const activeSlide = heroSlides[activeIndex];
+    const handleVideoToggle = async () => {
+        const video = videoRef.current;
+        if (!video) {
+            return;
+        }
 
-  return (
-    <section
-      className="relative isolate w-full overflow-hidden bg-[#1f1d1b]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      aria-label="Featured organization carousel"
-    >
-      <div className="relative h-[60vh] min-h-[420px] sm:h-[68vh] md:h-[72vh] lg:h-[78vh]">
-        {heroSlides.map((slide, index) => {
-          const isActive = index === activeIndex;
+        if (video.paused) {
+            try {
+                await video.play();
+                setIsPlaying(true);
+            } catch (error) {
+                console.warn('Hero video playback was blocked:', error);
+            }
+            return;
+        }
 
-          return (
-            <div
-              key={slide.id}
-              className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                isActive ? 'opacity-100' : 'pointer-events-none opacity-0'
-              }`}
-              aria-hidden={!isActive}
-            >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="h-full w-full object-cover"
-                style={{ objectPosition: slide.mobilePosition || slide.imagePosition }}
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,12,12,0.68)_0%,rgba(12,12,12,0.38)_38%,rgba(12,12,12,0.18)_100%)]" />
+        video.pause();
+        setIsPlaying(false);
+    };
+
+    return (
+        <section className="relative w-full overflow-hidden bg-[#fffdf9]">
+            <div className="relative mx-auto max-w-[1600px]">
+                <div className="relative flex h-[70vh] min-h-[500px] flex-col-reverse overflow-hidden md:flex-row">
+
+                    {/* Content */}
+                    <div className=" relative flex basis-full items-start bg-[#ffff] px-5 py-8 sm:px-9 sm:py-10 md:basis-[42%] md:px-[5vw] md:pt-12 md:pb-8 lg:pt-14 lg:pb-8">
+                        <div className="relative z-10 max-w-[30rem]">
+
+                            <p className="font-['Noto_Sans_Devanagari'] text-xs font-semibold tracking-[0.12em] text-[#d9773d] sm:text-sm">
+                                {activeVideo.eyebrow}
+                            </p>
+
+                            <h4 className="mt-2 max-w-[30rem] font-[Newsreader] text-[1.8rem] leading-[0.95] text-[#1f1d1b] sm:text-[2rem] lg:text-[2rem] xl:text-[2.5rem]">
+                                {activeVideo.title}
+                            </h4>
+
+                            <p className="mt-5 max-w-[28rem] text-sm leading-6 text-[#5d5a57] sm:text-base">
+                                {activeVideo.description}
+                            </p>
+
+                            <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+                                <Button size="lg" className="w-full sm:w-auto">
+                                    {activeVideo.primaryAction}
+                                </Button>
+
+                                <a
+                                    href="#"
+                                    className="inline-flex items-center gap-2 text-sm font-medium text-[#1f1d1b] transition-colors hover:text-[#d9773d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9773d] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f2eb]"
+                                >
+                                    <span>{activeVideo.secondaryAction}</span>
+                                    <ArrowRight size={16} />
+                                </a>
+                            </div>
+
+                            <div className="mt-8 hidden items-center gap-3 text-[0.65rem] font-medium uppercase tracking-[0.16em] text-[#5d5a57] sm:flex">
+                                <span className="flex h-8 items-center justify-center">
+                                    <span className="h-8 w-px bg-[#d9773d]" />
+                                </span>
+                                <span>Scroll to explore</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Video */}
+                    <div className="relative flex min-h-[38vh] basis-full overflow-hidden rounded-bl-[2rem] bg-[#e8d9ce] md:min-h-0 md:basis-[58%]">
+
+                        {/* Left gradient */}
+                        <div
+                            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[70px] bg-gradient-to-r from-[#d9773d] via-[#d9773d]/60 to-transparent"
+                        />
+
+                        {/* Bottom gradient */}
+                        <div
+                            className=" pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-[55px] bg-gradient-to-t from-[#d9773d] via-[#d9773d]/60 to-transparent "
+                        />
+
+                        <video
+                            ref={videoRef}
+                            className="h-full w-full object-cover"
+                            src={activeVideo.src}
+                            poster={activeVideo.poster}
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            style={{
+                                objectPosition: isMobile
+                                    ? activeVideo.mobilePosition
+                                    : activeVideo.desktopPosition,
+                            }}
+                            aria-label={activeVideo.title}
+                        />
+
+                        {/* Video control */}
+                        <button
+                            type="button"
+                            aria-label={isPlaying ? "Pause hero video" : "Play hero video"}
+                            onClick={handleVideoToggle}
+                            className="absolute bottom-5 right-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/20 text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-colors hover:bg-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                        >
+                            {isPlaying ? (
+                                <Pause size={16} />
+                            ) : (
+                                <Play size={16} className="ml-0.5" fill="currentColor" />
+                            )}
+                        </button>
+
+                    </div>
+
+                </div>
             </div>
-          );
-        })}
-
-        <div className="absolute inset-0 z-10 flex items-end">
-          <Container className="pb-8 pt-12 sm:pb-10 lg:pb-12">
-            <div className="max-w-[32rem] text-white">
-              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-orange-100">
-                {activeSlide.eyebrow}
-              </p>
-              <h1 className="mt-4 font-[Newsreader] text-4xl leading-none text-white sm:text-5xl lg:text-6xl">
-                {activeSlide.title}
-              </h1>
-              <p className="mt-4 max-w-md text-sm leading-6 text-white/85 sm:text-base">
-                {activeSlide.description}
-              </p>
-
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Button size="lg" className="w-full border border-[#d9773d] bg-[#d9773d] text-white hover:bg-[#c96a31] sm:w-auto">
-                  {activeSlide.primaryAction}
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="w-full border-white/30 bg-white/10 text-white hover:bg-white/15 sm:w-auto"
-                >
-                  {activeSlide.secondaryAction}
-                </Button>
-              </div>
-            </div>
-          </Container>
-        </div>
-
-        <div className="absolute right-4 top-1/2 z-20 flex -translate-y-1/2 items-center gap-2 sm:right-6 lg:right-8">
-          <button
-            type="button"
-            aria-label="Previous slide"
-            onClick={goToPrevious}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/25 bg-black/15 text-white backdrop-blur-sm transition-colors hover:bg-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <button
-            type="button"
-            aria-label="Next slide"
-            onClick={goToNext}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/25 bg-black/15 text-white backdrop-blur-sm transition-colors hover:bg-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          >
-            <ArrowRight size={18} />
-          </button>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-5 z-20 flex justify-center sm:bottom-7">
-          <div className="flex items-center gap-2 rounded-full border border-white/25 bg-black/15 px-3 py-2 backdrop-blur-sm">
-            {heroSlides.map((slide, index) => (
-              <button
-                key={slide.id}
-                type="button"
-                aria-label={`Go to slide ${index + 1}`}
-                aria-current={index === activeIndex}
-                onClick={() => goToSlide(index)}
-                className={`h-2 rounded-full transition-all duration-200 ${
-                  index === activeIndex ? 'w-6 bg-[#d9773d]' : 'w-2 bg-white/60 hover:bg-white/85'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 }
 
 export default Hero;
