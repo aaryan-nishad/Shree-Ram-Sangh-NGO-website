@@ -2,52 +2,77 @@ import { ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../ui/Button';
 import Container from '../ui/Container';
-import { NavLink } from 'react-router-dom';
+import { Link,NavLink } from 'react-router-dom';
 
 const navItems = [
   { label: 'About', href: '/about' },
   {
     label: 'Our Work',
-    href: '#our-work',
-    children: [
-      'Child & Women Welfare',
-      'Temple Restoration & Cultural Awakening',
-      'Environmental Conservation',
-      'Animal Welfare',
-    ],
+    href: '/missions',
+    children: [{
+      label: 'Child & Women Welfare',
+      href: '/missions#child-women'
+    }, 
+    {
+      label: 'Temple Restoration & Cultural Awakening',
+      href: '/missions#temple-restoration'
+    },
+     {
+      label: 'Environmental Conservation',
+      href: '/missions#environmental-conservation'
+    },
+     {
+      label: 'Animal Welfare',
+      href: '/missions#animal-welfare'
+    }
+  ],
   },
   {
     label: 'Impact',
     href: '#impact',
-    children: [
-      'Our Impact',
-      'Impact Stories',
-      '[IMPACT AREA]',
-      '[IMPACT REPORT]',
-      'View All Impact',
-    ],
+    children: [{
+      label: 'Our Impact'
+    }, {
+      label: 'Impact Stories'
+    }, {
+      label: '[IMPACT AREA]'
+    }]
   },
   {
     label: 'Stories',
     href: '#stories',
-    children: [
-      'Stories of Change',
-      'Community Stories',
-      'Volunteer Stories',
-      'News & Updates',
-      'View All Stories',
-    ],
+    children: [{
+      label: 'Stories of Change'
+    }, 
+    {
+      label: 'Community Stories'
+    }, 
+    {
+      label: 'Volunteer Stories'
+    }, 
+    {
+      label: 'News & Updates'
+    }, 
+    {
+      label: 'View All Stories'
+    }
+    ]
   },
   {
     label: 'Get Involved',
     href: '#get-involved',
-    children: [
-      'Volunteer',
-      'Donate',
-      'Partner With Us',
-      'Participate',
-      'Contact Us',
-    ],
+    children: [{
+      label: 'Volunteer'
+    }, {
+      label: 'Donate'
+    }, {
+      label: 'Partner With Us'
+    }, {
+      label: 'Participate'
+    }, {
+      label: 'Contact Us'
+    }
+    ]
   },
 ];
 
@@ -170,34 +195,69 @@ function Navbar() {
             }
 
             /* DROPDOWN ITEMS */
+            const isLinkable = item.href.startsWith('/');
+
             return (
               <div key={item.label} className="relative">
-                <button
-                  type="button"
-                  onClick={() => toggleDropdown(item.label)}
-                  aria-expanded={isDropdownOpen}
-                  aria-haspopup="menu"
-                  className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#d9773d]"
-                >
-                  <span>{item.label}</span>
+                {isLinkable ? (
+                  <div className="flex items-center gap-1">
+                    <NavLink
+                      to={item.href}
+                      className={({ isActive }) =>
+                        `text-sm font-medium transition-colors ${isActive
+                          ? 'text-white'
+                          : 'text-white/80 hover:text-white'
+                        }`
+                      }
+                    >
+                      {item.label}
+                      
+                    </NavLink>
 
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''
-                      }`}
-                  />
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleDropdown(item.label)}
+                      aria-expanded={isDropdownOpen}
+                      aria-haspopup="menu"
+                      aria-label={`Toggle ${item.label} submenu`}
+                      className="text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#d9773d]"
+                    >
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''
+                          }`}
+                      />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => toggleDropdown(item.label)}
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="menu"
+                    className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#d9773d]"
+                  >
+                    <span>{item.label}</span>
+
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''
+                        }`}
+                    />
+                  </button>
+                )}
 
                 {isDropdownOpen && (
                   <div className="absolute left-0 top-full mt-3 w-64 rounded-md border border-[#eadcc9] bg-white p-2 text-[#1f1d1b] shadow-[0_18px_52px_rgba(31,29,27,0.12)]">
                     {item.children.map((child) => (
-                      <a
-                        key={child}
-                        href="#"
+                      <Link
+                        key={child.label}
+                        to={child.href}
+                        onClick={() => setActiveDropdown(null)}
                         className="block rounded-sm px-3 py-2 text-sm text-[#3b3a38] transition-colors hover:bg-[#f7f1ea] hover:text-[#d9773d]"
                       >
-                        {child}
-                      </a>
+                        {child.label}
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -276,38 +336,67 @@ function Navbar() {
               .filter((item) => Array.isArray(item.children))
               .map((item) => {
                 const isExpanded = activeDropdown === item.label;
+                const isLinkable = item.href.startsWith('/');
 
                 return (
                   <div
                     key={item.label}
                     className="rounded-md border border-white/15 bg-white/5"
                   >
-                    <button
-                      type="button"
-                      onClick={() => toggleDropdown(item.label)}
-                      className="flex w-full items-center justify-between px-2 py-2.5 text-left text-sm font-medium text-white/90"
-                      aria-expanded={isExpanded}
-                    >
-                      <span>{item.label}</span>
+                    {isLinkable ? (
+                      <div className="flex w-full items-center justify-between px-2 py-2.5">
+                        <NavLink
+                          to={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className="text-left text-sm font-medium text-white/90"
+                        >
+                          {item.label}
+                        </NavLink>
 
-                      <ChevronDown
-                        size={16}
-                        className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
-                          }`}
-                      />
-                    </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleDropdown(item.label)}
+                          aria-expanded={isExpanded}
+                          aria-label={`Toggle ${item.label} submenu`}
+                          className="text-white/90"
+                        >
+                          <ChevronDown
+                            size={16}
+                            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                              }`}
+                          />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => toggleDropdown(item.label)}
+                        className="flex w-full items-center justify-between px-2 py-2.5 text-left text-sm font-medium text-white/90"
+                        aria-expanded={isExpanded}
+                      >
+                        <span>{item.label}</span>
+
+                        <ChevronDown
+                          size={16}
+                          className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                            }`}
+                        />
+                      </button>
+                    )}
 
                     {isExpanded && (
                       <div className="border-t border-white/10 px-3 py-2">
                         {item.children.map((child) => (
-                          <a
-                            key={child}
-                            href="#"
+                          <Link
+                            key={child.label}
+                            to={child.href}
                             className="block rounded-sm px-2 py-2 text-sm text-white/80 transition-colors hover:bg-white/10"
-                            onClick={() => setIsOpen(false)}
+                              onClick={() => {setIsOpen(false);
+                                setActiveDropdown(null);
+                              }}
                           >
-                            {child}
-                          </a>
+                            {child.label}
+                          </Link>
                         ))}
                       </div>
                     )}

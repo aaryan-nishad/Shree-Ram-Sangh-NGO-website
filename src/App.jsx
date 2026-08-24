@@ -3,6 +3,7 @@ import Navbar from './components/layout/Navbar.jsx';
 import Home from './pages/Home.jsx';
 import TopBar from './components/layout/Topbar.jsx';
 import About from './pages/About.jsx';
+import Missions from './pages/Missions.jsx';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/missions" element={<Missions />} />
         </Routes>
       </main>
     </div>
