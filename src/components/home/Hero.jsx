@@ -74,15 +74,19 @@ function Hero() {
     };
 
     return (
-        <section className="relative w-full overflow-hidden bg-[#fffdf9]">
+        <section className="relative z-20 w-full overflow-visible bg-[#fffdf9]">
             <div className="relative mx-auto max-w-[1600px]">
                 <div className="relative flex h-[70vh] min-h-[500px] flex-col-reverse overflow-hidden md:flex-row">
 
                     {/* Content */}
-                    <div className=" relative flex basis-full items-start bg-[#ffff] px-5 py-8 sm:px-9 sm:py-10 md:basis-[42%] md:px-[5vw] md:pt-12 md:pb-8 lg:pt-14 lg:pb-8">
-                        <div className="relative z-10 max-w-[30rem]">
+                    <div className=" relative flex basis-full items-start bg-[#ffff] px-5 py-8 sm:px-9 sm:py-10 md:basis-[42%] md:px-[5vw] md:pt-12 md:pb-8 lg:pt-14 lg:pb-8  bg-gradient-to-l from-[#d9773d] via-[#d9773d]/5 to-transparent ">
+                        {/* Bottom gradient */}
+                        {/* <div
+                            className=" pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-[55px] bg-gradient-to-t  from-[#d9773d] via-[#d9773d]/60 to-transparent "
+                        /> */}
+                        <div className="relative z-10 max-w-[30rem] ">
 
-                            <p className="font-['Noto_Sans_Devanagari'] text-xs font-semibold tracking-[0.12em] text-[#d9773d] sm:text-sm">
+                            <p className="text-xs font-semibold tracking-[0.12em] text-[#d9773d] sm:text-sm">
                                 {activeVideo.eyebrow}
                             </p>
 
@@ -119,7 +123,7 @@ function Hero() {
                     </div>
 
                     {/* Video */}
-                    <div className="relative flex min-h-[38vh] basis-full overflow-hidden rounded-bl-[2rem] bg-[#e8d9ce] md:min-h-0 md:basis-[58%]">
+                    <div className="relative flex min-h-[38vh] basis-full overflow-hidden  bg-[#e8d9ce] md:min-h-0 md:basis-[58%]">
 
                         {/* Left gradient */}
                         <div
@@ -168,6 +172,7 @@ function Hero() {
 
                 </div>
             </div>
+            
         </section>
     );
 }
