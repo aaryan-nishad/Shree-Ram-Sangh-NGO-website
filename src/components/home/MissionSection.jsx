@@ -38,12 +38,24 @@ function MissionSection() {
                   key={mission.link}
                   className="border-t border-[#eae1d8] pt-10 first:border-t-0"
                 >
-                  <div className="grid items-center gap-7 md:gap-10 lg:gap-14 xl:gap-16 md:grid-cols-2 border-2 border-amber-400 box-shadow-md rounded-lg p-5 hover:shadow-orange-200 hover:shadow-xl transition-shadow duration-300 ">
-                    {isImageFirst ? (
-                      <>
-                        <div className="order-2 md:order-1">
-                          <Link
-                            to={mission.link}
+                  <div className="relative overflow-hidden grid items-center gap-7 md:gap-10 lg:gap-14 xl:gap-16 md:grid-cols-2 border-2 border-amber-400 box-shadow-md rounded-lg p-5 hover:shadow-orange-200 hover:shadow-xl transition-shadow duration-300 ">
+                    {/* Background image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                      style={{
+                        backgroundImage: `url(${mission.backgroundImage})`,
+                      }}
+                    />
+
+                    {/* Orange/yellow overlay */}
+                    <div className="absolute inset-0 bg-red-900/85" />
+
+                    <div className="relative z-10 contents">
+                      {isImageFirst ? (
+                        <>
+                          <div className=" relative z-10 order-2 md:order-1">
+                            <Link
+                              to={mission.link}
                             className="group relative block overflow-hidden rounded-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9773d] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fffdf9]"
                             aria-label={`View ${mission.title}`}
                           >
@@ -70,13 +82,13 @@ function MissionSection() {
                           </Link>
                         </div>
 
-                        <div className="order-1 md:order-2">
+                          <div className="relative z-10 order-1 md:order-2">
                           <div className="max-w-xl">
                             {/* <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#d9773d] sm:text-base">
                               {mission.number}
                             </p> */}
                             <h3
-                              className="mt-3 text-2xl font-medium tracking-[-0.04em] text-[#1f1d1b] sm:text-[2.2rem]"
+                              className="mt-3 text-2xl font-medium tracking-[-0.04em] text-[#fff] sm:text-[2.2rem]"
                               style={{ fontFamily: '"Newsreader", Georgia, serif' }}
                             >
                               {mission.title}
@@ -85,11 +97,11 @@ function MissionSection() {
                                               {mission.description.map((point) => (
                                                   <div
                                                       key={point}
-                                                      className="flex items-start gap-3 text-sm leading-6 text-text-muted sm:text-base"
+                                                      className="flex items-start gap-3 text-sm leading-6 text-white sm:text-base"
                                                   >
                                                       <span
                                                           aria-hidden="true"
-                                                          className="mt-1 shrink-0 text-sm text-[#d9773d]"
+                                                          className="mt-1 shrink-0 text-sm text-[#ffee03]"
                                                       >
                                                           卐
                                                       </span>
@@ -101,15 +113,16 @@ function MissionSection() {
                           </div>
                         </div>
                       </>
+                   
                     ) : (
                       <>
-                        <div className="order-1">
+                            <div className="relative z-10 order-1">
                           <div className="max-w-xl">
                             {/* <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#d9773d] sm:text-base">
                               {mission.number}
                             </p> */}
                             <h3
-                              className="mt-3 text-2xl font-medium tracking-[-0.04em] text-[#1f1d1b] sm:text-[2.2rem]"
+                              className="mt-3 text-2xl font-medium tracking-[-0.04em] text-[#ffff] sm:text-[2.2rem]"
                               style={{ fontFamily: '"Newsreader", Georgia, serif' }}
                             >
                               {mission.title}
@@ -118,11 +131,11 @@ function MissionSection() {
                                                   {mission.description.map((point) => (
                                                       <div
                                                           key={point}
-                                                          className="flex items-start gap-3 text-sm leading-6 text-text-muted sm:text-base"
+                                                          className="flex items-start gap-3 text-sm leading-6 text-white sm:text-base"
                                                       >
                                                           <span
                                                               aria-hidden="true"
-                                                              className="mt-1 shrink-0 text-sm text-[#d9773d]"
+                                                              className="mt-1 shrink-0 text-sm text-[#ffee03]"
                                                           >
                                                               卐
                                                           </span>
@@ -134,7 +147,7 @@ function MissionSection() {
                           </div>
                         </div>
 
-                        <div className="order-2">
+                            <div className="relative z-10 order-2">
                           <Link
                             to={mission.link}
                             className="group relative block overflow-hidden rounded-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9773d] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fffdf9]"
@@ -164,6 +177,7 @@ function MissionSection() {
                         </div>
                       </>
                     )}
+                    </div>
                   </div>
                 </article>
               );
