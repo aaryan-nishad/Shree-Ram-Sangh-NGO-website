@@ -16,6 +16,9 @@
   --color-border: #eae1d8;
 }
 
+html{
+  scroll-behavior: smooth;
+}
 @layer base {
   :root {
     color-scheme: light;

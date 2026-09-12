@@ -29,12 +29,12 @@ const navItems = [
   },
   {
     label: 'Impact',
-    href: '#impact',
-    children: [{
-      label: 'Our Impact'
-    }, {
+    href: '/#impact',
+    children: [ 
+    {
       label: 'Impact Stories'
-    }, {
+    }, 
+    {
       label: '[IMPACT AREA]'
     }]
   },
@@ -109,6 +109,34 @@ function Navbar() {
     );
   };
 
+  const handleLogoClick = () => {
+    if (window.location.pathname === '/') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  function Home() {
+    useEffect(() => {
+      if (window.location.hash === '#impact') {
+        const timer = setTimeout(() => {
+          const element = document.getElementById('impact');
+
+          if (element) {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }
+        }, 100);
+
+        return () => clearTimeout(timer);
+      }
+    }, []);
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full bg-[#d9773d] text-white shadow-[0_1px_0_rgba(0,0,0,0.08)]">
       <Container
@@ -127,6 +155,7 @@ function Navbar() {
 
           <NavLink
             to="/"
+            onClick={handleLogoClick}
             className="truncate font-['Noto_Sans_Devanagari'] text-base font-semibold tracking-[0.02em] text-white sm:text-lg"
             aria-label="श्री राम संघ home"
             style={{ fontFamily: '"Rozha One", serif' }}

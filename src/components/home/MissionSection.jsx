@@ -41,7 +41,7 @@ function MissionSection() {
                   <div className="relative overflow-hidden grid items-center gap-7 md:gap-10 lg:gap-14 xl:gap-16 md:grid-cols-2 border-2 border-amber-400 box-shadow-md rounded-lg p-5 hover:shadow-orange-200 hover:shadow-xl transition-shadow duration-300 ">
                     {/* Background image */}
                     <div
-                      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat lg:bg-fixed"
                       style={{
                         backgroundImage: `url(${mission.backgroundImage})`,
                       }}
